@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 # nycosm <img src="man/figures/nycosm.png" align="right" width="360" alt="nycosm package hex logo">
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/kjhealy/nycosm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kjhealy/nycosm/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The nycosm package provides [OpenStreetMap](https://www.openstreetmap.org) (OSM) features for New York City, from the Geofabrik extract of 18 October 2026: points of interest, streets and paths, rail, buildings, land use, parks, water, and transit routes, with all their OSM tags. There are about 2.5 million features in five layers. They are stored as GeoParquet files in EPSG:2263 and accessed via [duckplyr](https://duckplyr.tidyverse.org), so you read only the rows and columns you need.
