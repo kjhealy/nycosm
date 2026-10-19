@@ -1,0 +1,135 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  message = FALSE,
+  dpi = 300
+)
+```
+
+# nycosm <img src="man/figures/nycosm.png" align="right" width="360" alt="nycosm package hex logo">
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The nycosm package provides [OpenStreetMap](https://www.openstreetmap.org) (OSM) features for New York City, from the Geofabrik extract of 18 October 2026: points of interest, streets and paths, rail, buildings, land use, parks, water, and transit routes, with all their OSM tags. There are about 2.5 million features in five layers. They are stored as GeoParquet files in EPSG:2263 and accessed via [duckplyr](https://duckplyr.tidyverse.org), so you read only the rows and columns you need.
+
+Map data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), available under the [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The bundled data are a database derived from OSM and are also under the ODbL. The package code is MIT licensed.
+
+## Installation
+
+You can install the development version of nycosm from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("kjhealy/nycosm")
+```
+
+## Load the package
+
+```{r load, message = FALSE}
+library(nycosm)
+library(dplyr)
+library(ggplot2)
+```
+
+## What's included
+
+Each layer has its own function, returning a lazy data frame. Use dplyr verbs to query it, `collect()` to bring results into R, and `nyc_osm_to_sf()` to get an sf object. Every function takes a `borough` argument.
+
+| Function | Features | Rows |
+|---|---|---|
+| `nyc_osm_points()` | Points of interest, transit stops, crossings, street furniture, trees | 701,481 |
+| `nyc_osm_lines()` | Streets, footways, cycleways, rail, waterways, barriers | 471,643 |
+| `nyc_osm_buildings()` | Buildings | 1,089,132 |
+| `nyc_osm_areas()` | Land use, parks, leisure, water, natural features, amenity areas | 202,990 |
+| `nyc_osm_routes()` | Bus, subway, train, ferry, bicycle, and hiking routes | 2,426 |
+
+```{r points}
+nyc_osm_points() |>
+  select(-geometry)
+```
+
+Common tags are columns. The `tags` column has every OSM tag of each feature; `nyc_osm_add_tags()` pulls any of them out into columns.
+
+```{r tags}
+nyc_osm_points(borough = "Brooklyn") |>
+  filter(amenity == "cafe") |>
+  nyc_osm_add_tags(c("outdoor_seating", "internet_access")) |>
+  count(outdoor_seating, internet_access) |>
+  arrange(desc(n)) |>
+  collect()
+```
+
+## Example: what's on the map
+
+```{r amenities}
+nyc_osm_points() |>
+  filter(!is.na(amenity), !is.na(borough)) |>
+  count(borough, amenity) |>
+  collect() |>
+  filter(amenity %in% c("restaurant", "cafe", "bar", "fast_food", "pharmacy")) |>
+  tidyr::pivot_wider(names_from = amenity, values_from = n)
+```
+
+## Example: a map
+
+Parks, cycleways, and cafés in lower Manhattan.
+
+```{r map, fig.height = 7, message = FALSE}
+library(sf)
+
+parks <- nyc_osm_areas(borough = "Manhattan") |>
+  filter(leisure == "park") |>
+  collect() |>
+  nyc_osm_to_sf()
+
+buildings <- nyc_osm_buildings(borough = "Manhattan") |>
+  select(osm_id, geometry) |>
+  collect() |>
+  nyc_osm_to_sf()
+
+cycleways <- nyc_osm_lines(borough = "Manhattan") |>
+  filter(highway == "cycleway" | cycleway %in% c("lane", "track")) |>
+  collect() |>
+  nyc_osm_to_sf()
+
+cafes <- nyc_osm_points(borough = "Manhattan") |>
+  filter(amenity == "cafe") |>
+  collect() |>
+  nyc_osm_to_sf()
+
+ggplot() +
+  geom_sf(data = buildings, fill = "gray85", color = NA) +
+  geom_sf(data = parks, fill = "#7fbf7b", color = NA) +
+  geom_sf(data = cycleways, color = "#2166ac", linewidth = 0.4) +
+  geom_sf(data = cafes, color = "#b2182b", size = 0.6) +
+  coord_sf(
+    xlim = c(978000, 992000),
+    ylim = c(191000, 206000),
+    crs = 2263,
+    datum = NA
+  ) +
+  labs(
+    title = "Lower Manhattan: parks, cycleways, and cafés",
+    caption = "Map data © OpenStreetMap contributors (ODbL)."
+  ) +
+  theme_void()
+```
+
+## OSM and official NYC data
+
+OSM is edited by volunteers. For authoritative building footprints, streets, and boundaries, use [nycbuildings](https://github.com/kjhealy/nycbuildings), [nyclion](https://github.com/kjhealy/nyclion) or [nycstreets](https://github.com/kjhealy/nycstreets), and [nycmaps](https://github.com/kjhealy/nycmaps). Most OSM buildings in NYC were imported from the city's footprints; their `nycdoitt_bin` column joins to `bin` in nycbuildings. OSM adds what the city's files do not have: points of interest, footways and cycleways, transit stops and routes, land use, and natural features, along with building types and names.
+
+## Data source
+
+- Geofabrik, [New York State extract](https://download.geofabrik.de/north-america/us/new-york.html) `new-york-261018.osm.pbf` (OSM replication timestamp 2026-10-18T20:25:06Z).
+- Clipped to within 500 feet of the borough boundaries in [nycmaps](https://github.com/kjhealy/nycmaps).

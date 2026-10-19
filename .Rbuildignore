@@ -1,0 +1,10 @@
+^nycosm\.Rproj$
+^\.Rproj\.user$
+^\.here$
+^tmp$
+^LICENSE\.md$
+^data-raw$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

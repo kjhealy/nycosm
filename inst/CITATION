@@ -1,0 +1,32 @@
+bibentry(
+  bibtype = "Manual",
+  title = "nycosm: OpenStreetMap Features for New York City",
+  author = person(
+    given = "Kieran",
+    family = "Healy",
+    role = c("aut", "cre"),
+    email = "kieran.healy@duke.edu"
+  ),
+  year = "2026",
+  note = paste(
+    "R package version 0.0.1.9000.",
+    "Map data copyright OpenStreetMap contributors, available under the",
+    "Open Database License (ODbL) 1.0, https://www.openstreetmap.org/copyright"
+  ),
+  url = "https://kjhealy.github.io/nycosm/",
+  key = "nycosm"
+)
+
+bibentry(
+  bibtype = "Misc",
+  title = "OpenStreetMap",
+  author = person("OpenStreetMap contributors"),
+  year = "2026",
+  note = paste(
+    "Planet dump retrieved from https://planet.osm.org, Geofabrik extract",
+    "of New York State, 2026-10-18. Available under the Open Database",
+    "License (ODbL) 1.0"
+  ),
+  url = "https://www.openstreetmap.org",
+  key = "osm"
+)

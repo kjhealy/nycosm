@@ -1,0 +1,11 @@
+.Rproj.user
+/docs
+data-raw/osm/data/
+tmp/
+.DS_Store
+!man/figures/
+.Rhistory
+.RData
+.httr-oauth
+.quarto
+data-raw/osm/.here

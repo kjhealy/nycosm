@@ -1,0 +1,6 @@
+source,url,file,status,bytes,downloaded,md5
+Geofabrik,https://download.geofabrik.de/north-america/us/new-york-261018.osm.pbf,data/new-york-261018.osm.pbf,ok,497832643,2026-10-18T23:27:35Z,07fdaf8792fac744e18dd60f728d148e
+Geofabrik,https://download.geofabrik.de/north-america/us/new-york-261018.osm.pbf.md5,data/new-york-261018.osm.pbf.md5,ok,58,2026-10-18T23:27:36Z,NA
+Geofabrik,https://download.geofabrik.de/north-america/us/new-york.poly,docs/new-york.poly,ok,7535,2026-10-18T23:27:36Z,NA
+Geofabrik,https://download.geofabrik.de/north-america/us/new-york-updates/state.txt,docs/geofabrik_state.txt,ok,113,2026-10-18T23:27:37Z,NA
+Geofabrik,https://download.geofabrik.de/north-america/us/new-york.html,docs/geofabrik_new-york.html,ok,22929,2026-10-18T23:27:37Z,NA
